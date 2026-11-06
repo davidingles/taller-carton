@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Taller de cartón</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png">
   <link rel="stylesheet" href="./style.css">
   <script defer src="./app.js"></script>
 </head>
@@ -16,11 +17,13 @@
     <symbol id="web" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/></symbol>
     <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
     <symbol id="external" viewBox="0 0 24 24"><path d="M13 5h6v6m0-6-9 9m9 0v5H5V5h5"/></symbol>
+    <symbol id="save" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3h2Zm2 0v6h10V3M7 21v-8h10v8"/></symbol>
+    <symbol id="models-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
     <symbol id="sound" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4V9Zm12 0a4 4 0 0 1 0 6m2-8a7 7 0 0 1 0 10"/></symbol>
     <symbol id="mute" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4V9Zm12 0 5 6m0-6-5 6"/></symbol>
   </svg>
   <header class="bar">
-    <div class="brand"><span class="brand-mark"><svg><use href="#box"/></svg></span> Taller de cartón</div>
+    <div class="brand"><img class="brand-mark" src="./assets/logo.png" alt=""> Taller de cartón</div>
     <button class="sound icon-button" id="sound-toggle" type="button" aria-label="Sonido" aria-pressed="true" title="Activar o silenciar sonidos"><svg><use href="#sound"/></svg></button>
   </header>
   <main>
@@ -29,6 +32,7 @@
         <div><h1 id="file-title">Archivo SVG</h1><p class="filename" id="filename">Ningún archivo seleccionado</p></div>
         <div class="actions">
           <button class="button secondary" id="open" type="button" disabled><svg><use href="#external"/></svg>Abrir SVG</button>
+          <button class="button secondary" id="save-result" type="button" title="Guardar el archivo generado" disabled><svg><use href="#save"/></svg>Guardar</button>
           <button class="button primary" id="choose" type="button"><svg><use href="#upload"/></svg><span>Cargar SVG</span></button>
           <input id="browser-file" type="file" accept=".svg,image/svg+xml" hidden>
         </div>
@@ -57,6 +61,10 @@
         <button class="card publish" data-dialog="publish" type="button" disabled>
           <span class="card-top"><span class="card-icon"><svg><use href="#web"/></svg></span><span class="step">03</span></span>
           <span class="card-bottom"><span><strong>Subir a la web</strong><small>GLB · GitHub Pages</small></span><svg><use href="#arrow"/></svg></span>
+        </button>
+        <button class="card models" data-dialog="models" type="button">
+          <span class="card-top"><span class="card-icon"><svg><use href="#models-icon"/></svg></span></span>
+          <span class="card-bottom"><span><strong>Modelos</strong><small>Catálogo FEFCO</small></span><svg><use href="#arrow"/></svg></span>
         </button>
       </div>
     </section>
@@ -87,6 +95,32 @@
       <ol class="pipeline"><li>Recibir el archivo .blend generado</li><li>Hornear las texturas</li><li>Exportar el modelo .glb</li><li>Publicar en GitHub Pages</li></ol>
       <p class="notice">Publicación pendiente.</p>
       <div class="dialog-actions"><button class="button secondary" value="close">Cerrar</button><button class="button primary" disabled>Publicar</button></div>
+    </form>
+  </dialog>
+  <dialog class="catalog" id="models" aria-labelledby="models-title">
+    <form method="dialog">
+      <div class="catalog-heading">
+        <div><h2 id="models-title">Modelos FEFCO</h2><p class="filename">Troqueles esquemáticos</p></div>
+        <button class="button secondary" value="close">Cerrar</button>
+      </div>
+      <div class="catalog-grid">
+        <button class="model" type="button" data-model="0201">
+          <img src="./assets/models/0201.svg" alt="">
+          <span class="code">FEFCO 0201</span><strong>Caja americana</strong>
+        </button>
+        <button class="model" type="button" data-model="0203">
+          <img src="./assets/models/0203.svg" alt="">
+          <span class="code">FEFCO 0203</span><strong>Caja de solapas superpuestas</strong>
+        </button>
+        <button class="model" type="button" data-model="0427">
+          <img src="./assets/models/0427.svg" alt="">
+          <span class="code">FEFCO 0427</span><strong>Estuche con tapa integrada</strong>
+        </button>
+        <button class="model" type="button" data-model="0452">
+          <img src="./assets/models/0452.svg" alt="">
+          <span class="code">FEFCO 0452</span><strong>Bandeja sin tapa</strong>
+        </button>
+      </div>
     </form>
   </dialog>
 </body>

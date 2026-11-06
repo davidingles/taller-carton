@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="648mm" height="384mm" viewBox="0 0 648 384">
+  <title>FEFCO 0203 · Caja de solapas superpuestas</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 142 36 132V12H214V132H218V12H334V132H338V12H514V132H518V12H636V372H518V252H514V372H338V252H334V372H218V252H214V372H36V252L12 242Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M36 132H214M218 132H334M338 132H514M518 132H636M36 252H214M218 252H334M338 252H514M518 252H636M36 132V252M216 132V252M336 132V252M516 132V252"/>
+  </g>
+</svg>

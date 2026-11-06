@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="304mm" height="244mm" viewBox="0 0 304 244">
+  <title>FEFCO 0452 · Bandeja sin tapa</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M52 12H252V52L273 31H288L292 52V192L288 213H273L252 192V232H52V192L31 213H16L12 192V52L16 31H31L52 52Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M52 52H252V192H52ZM12 52H52M252 52H292M12 192H52M252 192H292"/>
+  </g>
+</svg>

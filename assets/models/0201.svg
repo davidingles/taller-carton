@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="650mm" height="264mm" viewBox="0 0 650 264">
+  <title>FEFCO 0201 · Caja americana</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 82 38 72V12H216V72H220V12H336V72H340V12H516V72H520V12H638V252H520V192H516V252H340V192H336V252H220V192H216V252H38V192L12 182Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M38 72H216M220 72H336M340 72H516M520 72H638M38 192H216M220 192H336M340 192H516M520 192H638M38 72V192M218 72V192M338 72V192M518 72V192"/>
+  </g>
+</svg>

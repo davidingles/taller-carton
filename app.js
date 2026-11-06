@@ -3,14 +3,18 @@
 const invoke = window.__TAURI__?.core.invoke;
 const chooseButton = document.querySelector('#choose');
 const openButton = document.querySelector('#open');
+const saveButton = document.querySelector('#save-result');
 const browserFile = document.querySelector('#browser-file');
 const filename = document.querySelector('#filename');
 const placeholder = document.querySelector('#placeholder');
 const preview = document.querySelector('#preview-image');
 const message = document.querySelector('#file-message');
 const cards = [...document.querySelectorAll('[data-dialog]')];
+const operations = cards.filter(card => card.dataset.dialog !== 'models');
+const catalog = document.querySelector('#models');
 const soundToggle = document.querySelector('#sound-toggle');
 let previewUrl;
+let generatedPath;
 let soundEnabled = true;
 let audio;
 
@@ -43,30 +47,37 @@ soundToggle.addEventListener('click', () => {
   clickSound();
 });
 
-function showMessage(text = '') {
+function showMessage(text = '', isError = true) {
   message.textContent = text;
   message.hidden = !text;
+  message.classList.toggle('is-error', isError);
 }
 
 function clearSelection() {
-  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  if (previewUrl?.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
   previewUrl = undefined;
   preview.removeAttribute('src');
   preview.hidden = true;
   placeholder.hidden = false;
   filename.textContent = 'Ningún archivo seleccionado';
   openButton.disabled = true;
-  cards.forEach(card => { card.disabled = true; });
+  generatedPath = undefined;
+  saveButton.disabled = true;
+  operations.forEach(card => { card.disabled = true; });
 }
 
-async function displaySvg(data, name) {
-  clearSelection();
+function displaySvg(data, name) {
   const url = URL.createObjectURL(new Blob([data], { type: 'image/svg+xml' }));
+  return displayPreview(url, name);
+}
+
+async function displayPreview(url, name) {
+  clearSelection();
   preview.src = url;
   try {
     await preview.decode();
   } catch {
-    URL.revokeObjectURL(url);
+    if (url.startsWith('blob:')) URL.revokeObjectURL(url);
     preview.removeAttribute('src');
     throw new Error('No se pudo previsualizar el SVG. Comprueba que el archivo sea válido.');
   }
@@ -74,13 +85,14 @@ async function displaySvg(data, name) {
   preview.hidden = false;
   placeholder.hidden = true;
   filename.textContent = name;
-  cards.forEach(card => { card.disabled = false; });
+  operations.forEach(card => { card.disabled = false; });
   document.querySelectorAll('dialog form').forEach(form => form.reset());
 }
 
 async function loadSelection(load) {
   chooseButton.disabled = true;
   openButton.disabled = true;
+  saveButton.disabled = true;
   showMessage();
   try {
     await load();
@@ -88,6 +100,7 @@ async function loadSelection(load) {
     showMessage(error instanceof Error ? error.message : String(error));
   } finally {
     openButton.disabled = !previewUrl || !invoke;
+    saveButton.disabled = !generatedPath || !invoke;
     chooseButton.disabled = false;
     chooseButton.querySelector('span').textContent = previewUrl ? 'Cambiar SVG' : 'Cargar SVG';
   }
@@ -128,8 +141,49 @@ openButton.addEventListener('click', async () => {
   }
 });
 
+// The generation workflows dispatch this event only after creating the output file.
+document.addEventListener('resultado-generado', event => {
+  const path = event.detail?.path;
+  if (!invoke || !previewUrl || typeof path !== 'string' || !/\.(svg|blend)$/i.test(path)) return;
+  generatedPath = path;
+  saveButton.disabled = chooseButton.disabled;
+});
+
+saveButton.addEventListener('click', async () => {
+  saveButton.disabled = true;
+  chooseButton.disabled = true;
+  showMessage();
+  try {
+    const savedName = await invoke('save_result', { path: generatedPath });
+    if (savedName !== null) showMessage(`Guardado: ${savedName}`, false);
+  } catch (error) {
+    showMessage(String(error));
+  } finally {
+    chooseButton.disabled = false;
+    saveButton.disabled = !generatedPath;
+  }
+});
+
 cards.forEach(card => {
   card.addEventListener('click', () => {
+    if (chooseButton.disabled) return;
     document.getElementById(card.dataset.dialog).showModal();
+  });
+});
+
+catalog.querySelectorAll('[data-model]').forEach(model => {
+  model.addEventListener('click', () => {
+    catalog.close();
+    void loadSelection(async () => {
+      const code = model.dataset.model;
+      if (!invoke) {
+        await displayPreview(model.querySelector('img').src, `FEFCO-${code}.svg`);
+        return;
+      }
+      const name = await invoke('choose_model', { code });
+      clearSelection();
+      const bytes = await invoke('read_svg');
+      await displaySvg(bytes, name);
+    });
   });
 });
