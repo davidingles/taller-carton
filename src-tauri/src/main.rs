@@ -56,13 +56,25 @@ async fn choose_model(
     code: String,
 ) -> Result<String, String> {
     let svg: &[u8] = match code.as_str() {
+        "0200" => include_bytes!("../../assets/models/0200.svg"),
         "0201" => include_bytes!("../../assets/models/0201.svg"),
+        "0202" => include_bytes!("../../assets/models/0202.svg"),
         "0203" => include_bytes!("../../assets/models/0203.svg"),
+        "0204" => include_bytes!("../../assets/models/0204.svg"),
+        "0401" => include_bytes!("../../assets/models/0401.svg"),
+        "0426" => include_bytes!("../../assets/models/0426.svg"),
         "0427" => include_bytes!("../../assets/models/0427.svg"),
+        "0451" => include_bytes!("../../assets/models/0451.svg"),
         "0452" => include_bytes!("../../assets/models/0452.svg"),
+        "ARM-01" => include_bytes!("../../assets/models/ARM-01.svg"),
+        "ARM-02" => include_bytes!("../../assets/models/ARM-02.svg"),
         _ => return Err("Este modelo no está en el catálogo.".into()),
     };
-    let name = format!("FEFCO-{code}.svg");
+    let name = if code.starts_with("ARM-") {
+        format!("{code}.svg")
+    } else {
+        format!("FEFCO-{code}.svg")
+    };
     let directory = app
         .path()
         .app_cache_dir()

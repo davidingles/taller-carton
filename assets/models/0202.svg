@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="650mm" height="304mm" viewBox="0 0 650 304">
+  <title>FEFCO 0202 · Caja de solapas con solape parcial</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 102 38 92V12H216V92H220V12H336V92H340V12H516V92H520V12H638V292H520V212H516V292H340V212H336V292H220V212H216V292H38V212L12 202Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M38 92H216M220 92H336M340 92H516M520 92H638M38 212H216M220 212H336M340 212H516M520 212H638M38 92V212M218 92V212M338 92V212M518 92V212"/>
+  </g>
+</svg>

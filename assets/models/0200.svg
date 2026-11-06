@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="650mm" height="204mm" viewBox="0 0 650 204">
+  <title>FEFCO 0200 · Caja de solapas por un lado</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 22 38 12H638V192H520V132H516V192H340V132H336V192H220V132H216V192H38V132L12 122Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M38 132H216M220 132H336M340 132H516M520 132H638M38 12V132M218 12V132M338 12V132M518 12V132"/>
+  </g>
+</svg>

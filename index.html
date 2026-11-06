@@ -6,6 +6,7 @@
   <title>Taller de cartón</title>
   <link rel="icon" type="image/png" href="./assets/logo.png">
   <link rel="stylesheet" href="./style.css">
+  <script defer src="./model-preview.js"></script>
   <script defer src="./app.js"></script>
 </head>
 <body>
@@ -24,7 +25,10 @@
   </svg>
   <header class="bar">
     <div class="brand"><img class="brand-mark" src="./assets/logo.png" alt=""> Taller de cartón</div>
-    <button class="sound icon-button" id="sound-toggle" type="button" aria-label="Sonido" aria-pressed="true" title="Activar o silenciar sonidos"><svg><use href="#sound"/></svg></button>
+    <div class="header-actions">
+      <button class="sound icon-button" id="sound-toggle" type="button" aria-label="Sonido" aria-pressed="true" title="Activar o silenciar sonidos"><svg><use href="#sound"/></svg></button>
+      <button class="button primary" id="send-plotter" type="button" disabled><svg aria-hidden="true"><use href="#arrow"/></svg>Enviar al plotter</button>
+    </div>
   </header>
   <main>
     <section class="panel" aria-labelledby="file-title">
@@ -37,13 +41,24 @@
           <input id="browser-file" type="file" accept=".svg,image/svg+xml" hidden>
         </div>
       </div>
-      <div class="preview" aria-label="Vista previa del SVG">
-        <div class="placeholder" id="placeholder">
-          <span class="file-icon"><svg><use href="#file"/></svg></span>
-          <strong>Vista previa</strong>
-          <span>Carga un archivo .svg</span>
+      <div class="preview-layout">
+        <div class="preview" aria-label="Troquel SVG">
+          <span class="preview-label">Troquel SVG</span>
+          <div class="placeholder" id="placeholder">
+            <span class="file-icon"><svg><use href="#file"/></svg></span>
+            <strong>Vista previa</strong>
+            <span>Carga un SVG o elige un modelo</span>
+          </div>
+          <img id="preview-image" alt="Vista previa del troquel SVG" hidden>
         </div>
-        <img id="preview-image" alt="Vista previa del troquel SVG" hidden>
+        <div class="preview preview-3d" aria-label="Vista 3D">
+          <span class="preview-label">Vista 3D</span>
+          <div class="placeholder" id="model-placeholder">
+            <span class="file-icon"><svg><use href="#box"/></svg></span>
+            <span id="model-hint">Elige un modelo para verlo montado</span>
+          </div>
+          <svg id="model-preview" role="img" aria-label="Representación 3D esquemática del modelo montado" hidden></svg>
+        </div>
       </div>
       <p class="message" id="file-message" role="status" hidden></p>
     </section>
@@ -92,6 +107,9 @@
   <dialog id="publish" aria-labelledby="publish-title">
     <form method="dialog">
       <h2 id="publish-title">Subir a la web</h2>
+      <div class="fields client-key">
+        <label>Introduce CLAVE PARA EL CLIENTE<input type="password" name="clave-cliente" autocomplete="new-password" autofocus></label>
+      </div>
       <ol class="pipeline"><li>Recibir el archivo .blend generado</li><li>Hornear las texturas</li><li>Exportar el modelo .glb</li><li>Publicar en GitHub Pages</li></ol>
       <p class="notice">Publicación pendiente.</p>
       <div class="dialog-actions"><button class="button secondary" value="close">Cerrar</button><button class="button primary" disabled>Publicar</button></div>
@@ -103,25 +121,111 @@
         <div><h2 id="models-title">Modelos FEFCO</h2><p class="filename">Troqueles esquemáticos</p></div>
         <button class="button secondary" value="close">Cerrar</button>
       </div>
-      <div class="catalog-grid">
-        <button class="model" type="button" data-model="0201">
-          <img src="./assets/models/0201.svg" alt="">
-          <span class="code">FEFCO 0201</span><strong>Caja americana</strong>
-        </button>
-        <button class="model" type="button" data-model="0203">
-          <img src="./assets/models/0203.svg" alt="">
-          <span class="code">FEFCO 0203</span><strong>Caja de solapas superpuestas</strong>
-        </button>
-        <button class="model" type="button" data-model="0427">
-          <img src="./assets/models/0427.svg" alt="">
-          <span class="code">FEFCO 0427</span><strong>Estuche con tapa integrada</strong>
-        </button>
-        <button class="model" type="button" data-model="0452">
-          <img src="./assets/models/0452.svg" alt="">
-          <span class="code">FEFCO 0452</span><strong>Bandeja sin tapa</strong>
-        </button>
+      <div class="catalog-controls">
+        <input class="catalog-search" type="search" id="model-search" aria-label="Buscar modelos" placeholder="Buscar por código o nombre" autofocus>
+        <div class="catalog-tabs" role="group" aria-label="Categoría de modelos">
+          <button type="button" data-filter="all" aria-pressed="true">TODOS</button>
+          <button type="button" data-filter="caja" aria-pressed="false">CAJA</button>
+          <button type="button" data-filter="bandejas" aria-pressed="false">BANDEJAS</button>
+          <button type="button" data-filter="estuches" aria-pressed="false">ESTUCHES</button>
+          <button type="button" data-filter="armarios" aria-pressed="false">ARMARIOS</button>
+        </div>
+      </div>
+      <p class="catalog-empty" role="status" hidden>No hay modelos que coincidan con la búsqueda.</p>
+      <div class="catalog-grid" aria-label="Modelos disponibles">
+        <article class="model" data-model="0200" data-category="caja">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0200.svg" alt="">
+            <strong>Caja de solapas por un lado</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0200</span></div>
+        </article>
+        <article class="model" data-model="0201" data-category="caja">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0201.svg" alt="">
+            <strong>Caja americana</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0201</span></div>
+        </article>
+        <article class="model" data-model="0202" data-category="caja">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0202.svg" alt="">
+            <strong>Caja de solapas con solape parcial</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0202</span></div>
+        </article>
+        <article class="model" data-model="0203" data-category="caja">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0203.svg" alt="">
+            <strong>Caja de solapas superpuestas</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0203</span></div>
+        </article>
+        <article class="model" data-model="0204" data-category="caja">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0204.svg" alt="">
+            <strong>Caja de solapas con cierre mixto</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0204</span></div>
+        </article>
+        <article class="model" data-model="0401" data-category="estuches">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0401.svg" alt="">
+            <strong>Estuche envolvente</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0401</span></div>
+        </article>
+        <article class="model" data-model="0426" data-category="estuches">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0426.svg" alt="">
+            <strong>Estuche con tapa y solapas</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0426</span></div>
+        </article>
+        <article class="model" data-model="0427" data-category="estuches">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0427.svg" alt="">
+            <strong>Estuche con tapa integrada</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0427</span></div>
+        </article>
+        <article class="model" data-model="0451" data-category="bandejas">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0451.svg" alt="">
+            <strong>Bandeja con pliegues diagonales</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0451</span></div>
+        </article>
+        <article class="model" data-model="0452" data-category="bandejas">
+          <button class="model-select" type="button">
+            <img src="./assets/models/0452.svg" alt="">
+            <strong>Bandeja sin tapa</strong>
+          </button>
+          <div class="model-ref"><span class="code">FEFCO 0452</span></div>
+        </article>
+        <article class="model" data-model="ARM-01" data-category="armarios">
+          <button class="model-select" type="button">
+            <img src="./assets/models/ARM-01.svg" alt="">
+            <strong>Armario de una puerta</strong>
+          </button>
+          <div class="model-ref"><span class="code">ARM-01</span></div>
+        </article>
+        <article class="model" data-model="ARM-02" data-category="armarios">
+          <button class="model-select" type="button">
+            <img src="./assets/models/ARM-02.svg" alt="">
+            <strong>Armario de dos puertas</strong>
+          </button>
+          <div class="model-ref"><span class="code">ARM-02</span></div>
+        </article>
       </div>
     </form>
   </dialog>
+  <template id="model-options">
+    <button type="button">C1</button>
+    <button type="button">C2</button>
+    <button type="button">C3</button>
+    <button type="button">C5</button>
+    <button type="button">C8</button>
+  </template>
 </body>
 </html>

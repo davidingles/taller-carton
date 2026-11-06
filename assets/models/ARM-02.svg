@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="616mm" height="418mm" viewBox="0 0 616 418">
+  <title>ARM-02 · Armario de dos puertas</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 107 28 92H112V58H202V88H206V12H410V88H414V58H504V92H588L604 107V311L588 326H504V360H414V330H410V406H206V330H202V360H112V326H28L12 311Z M40 193v32m536-32v32"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M112 92H202M206 88H410M414 92H504M112 326H202M206 330H410M414 326H504M112 92V326M204 88V330M412 88V330M504 92V326"/>
+  </g>
+</svg>

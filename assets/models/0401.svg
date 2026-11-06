@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="304mm" height="384mm" viewBox="0 0 304 384">
+  <title>FEFCO 0401 · Estuche envolvente</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M52 12H252V82H292V302H252V372H52V302H12V82H52Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M52 82H252M52 122H252M52 262H252M52 302H252M52 82V302M252 82V302"/>
+  </g>
+</svg>

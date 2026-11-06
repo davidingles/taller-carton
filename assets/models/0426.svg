@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="312mm" height="412mm" viewBox="0 0 312 412">
+  <title>FEFCO 0426 · Estuche con tapa y solapas</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M70 12H242V43L268 50V159L242 168V201L268 193V213H300V325H268V348L242 339V399H70V339L44 348V325H12V213H44V193L70 201V168L44 159V50L70 43Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M70 43H242M70 43V168M242 43V168M70 168H242M70 206H242M70 206V334M242 206V334M44 213V325M268 213V325M70 334H242M70 370H242"/>
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="304mm" height="244mm" viewBox="0 0 304 244">
+  <title>FEFCO 0451 · Bandeja con pliegues diagonales</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 12H292V232H12Z"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M52 12V232M252 12V232M12 52H292M12 192H292M12 12L52 52M292 12L252 52M12 232L52 192M292 232L252 192"/>
+  </g>
+</svg>

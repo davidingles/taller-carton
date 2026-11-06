@@ -4,10 +4,16 @@ const invoke = window.__TAURI__?.core.invoke;
 const chooseButton = document.querySelector('#choose');
 const openButton = document.querySelector('#open');
 const saveButton = document.querySelector('#save-result');
+const plotterButton = document.querySelector('#send-plotter');
 const browserFile = document.querySelector('#browser-file');
 const filename = document.querySelector('#filename');
 const placeholder = document.querySelector('#placeholder');
 const preview = document.querySelector('#preview-image');
+const foldedPreview = new FoldedPreview(
+  document.querySelector('#model-preview'),
+  document.querySelector('#model-placeholder'),
+  document.querySelector('#model-hint'),
+);
 const message = document.querySelector('#file-message');
 const cards = [...document.querySelectorAll('[data-dialog]')];
 const operations = cards.filter(card => card.dataset.dialog !== 'models');
@@ -59,19 +65,27 @@ function clearSelection() {
   preview.removeAttribute('src');
   preview.hidden = true;
   placeholder.hidden = false;
+  foldedPreview.show();
   filename.textContent = 'Ningún archivo seleccionado';
   openButton.disabled = true;
   generatedPath = undefined;
   saveButton.disabled = true;
+  plotterButton.disabled = true;
   operations.forEach(card => { card.disabled = true; });
 }
 
-function displaySvg(data, name) {
-  const url = URL.createObjectURL(new Blob([data], { type: 'image/svg+xml' }));
-  return displayPreview(url, name);
+async function displaySvg(data, name, code) {
+  const blob = new Blob([data], { type: 'image/svg+xml' });
+  let modelCode = code ?? FoldedPreview.identify(name);
+  if (!Object.hasOwn(FoldedPreview.models, modelCode)) {
+    const header = await blob.slice(0, 65536).text();
+    const title = header.match(/<title(?:\s[^>]*)?>([^<]+)<\/title>/i)?.[1];
+    if (title) modelCode = FoldedPreview.identify(title);
+  }
+  return displayPreview(URL.createObjectURL(blob), name, modelCode);
 }
 
-async function displayPreview(url, name) {
+async function displayPreview(url, name, modelCode) {
   clearSelection();
   preview.src = url;
   try {
@@ -84,6 +98,7 @@ async function displayPreview(url, name) {
   previewUrl = url;
   preview.hidden = false;
   placeholder.hidden = true;
+  foldedPreview.show(modelCode, true);
   filename.textContent = name;
   operations.forEach(card => { card.disabled = false; });
   document.querySelectorAll('dialog form').forEach(form => form.reset());
@@ -93,6 +108,7 @@ async function loadSelection(load) {
   chooseButton.disabled = true;
   openButton.disabled = true;
   saveButton.disabled = true;
+  plotterButton.disabled = true;
   showMessage();
   try {
     await load();
@@ -101,6 +117,7 @@ async function loadSelection(load) {
   } finally {
     openButton.disabled = !previewUrl || !invoke;
     saveButton.disabled = !generatedPath || !invoke;
+    plotterButton.disabled = !previewUrl;
     chooseButton.disabled = false;
     chooseButton.querySelector('span').textContent = previewUrl ? 'Cambiar SVG' : 'Cargar SVG';
   }
@@ -131,6 +148,10 @@ browserFile.addEventListener('change', () => {
 });
 
 if (!invoke) openButton.title = 'Disponible en la aplicación de escritorio';
+
+plotterButton.addEventListener('click', () => {
+  showMessage('Envío al plotter pendiente de configurar.', false);
+});
 
 openButton.addEventListener('click', async () => {
   showMessage();
@@ -171,19 +192,64 @@ cards.forEach(card => {
   });
 });
 
-catalog.querySelectorAll('[data-model]').forEach(model => {
-  model.addEventListener('click', () => {
+const catalogSearch = catalog.querySelector('#model-search');
+const catalogGrid = catalog.querySelector('.catalog-grid');
+const catalogEmpty = catalog.querySelector('.catalog-empty');
+const catalogTabs = [...catalog.querySelectorAll('[data-filter]')];
+const catalogModels = [...catalog.querySelectorAll('[data-model]')];
+const modelOptions = document.querySelector('#model-options');
+let catalogCategory = 'all';
+
+function normalizeSearch(value) {
+  return value.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+function filterModels() {
+  const words = normalizeSearch(catalogSearch.value).split(' ').filter(Boolean);
+  let matches = 0;
+  for (const model of catalogModels) {
+    const name = normalizeSearch(`${model.querySelector('.code').textContent} ${model.querySelector('strong').textContent}`);
+    const categoryMatches = catalogCategory === 'all' || catalogCategory === model.dataset.category;
+    model.hidden = !categoryMatches || !words.every(word => name.includes(word));
+    if (!model.hidden) matches++;
+  }
+  catalogEmpty.hidden = matches > 0;
+  catalogGrid.hidden = matches === 0;
+  catalogGrid.scrollTop = 0;
+}
+
+catalogSearch.addEventListener('input', filterModels);
+catalogSearch.addEventListener('keydown', event => {
+  if (event.key === 'Enter') event.preventDefault();
+});
+catalogTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    catalogCategory = tab.dataset.filter;
+    catalogTabs.forEach(item => item.setAttribute('aria-pressed', String(item === tab)));
+    filterModels();
+  });
+});
+
+catalogModels.forEach(model => {
+  const reference = model.querySelector('.model-ref');
+  const options = modelOptions.content.cloneNode(true);
+  options.querySelectorAll('button').forEach(button => {
+    button.setAttribute('aria-label', `${button.textContent} · ${reference.textContent.trim()}`);
+  });
+  reference.append(options);
+  model.querySelector('.model-select').addEventListener('click', () => {
     catalog.close();
     void loadSelection(async () => {
       const code = model.dataset.model;
       if (!invoke) {
-        await displayPreview(model.querySelector('img').src, `FEFCO-${code}.svg`);
+        const name = model.dataset.category === 'armarios' ? code : `FEFCO-${code}`;
+        await displayPreview(model.querySelector('img').src, `${name}.svg`, code);
         return;
       }
       const name = await invoke('choose_model', { code });
       clearSelection();
       const bytes = await invoke('read_svg');
-      await displaySvg(bytes, name);
+      await displaySvg(bytes, name, code);
     });
   });
 });

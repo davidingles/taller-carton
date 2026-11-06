@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="536mm" height="390mm" viewBox="0 0 536 390">
+  <title>ARM-01 · Armario de una puerta</title>
+  <g id="corte" fill="none" stroke="#225c78" stroke-width="2" stroke-linejoin="round">
+    <path d="M12 98 34 88V40H126V88H130V12H288V88H292V40H384V88H388V72H508L524 91V299L508 318H388V302H384V350H292V302H288V378H130V302H126V350H34V302L12 292Z M493 178v34"/>
+  </g>
+  <g id="hendido" fill="none" stroke="#b04470" stroke-width="1.5" stroke-dasharray="6 4">
+    <path d="M34 88H126M130 88H288M292 88H384M34 302H126M130 302H288M292 302H384M34 88V302M128 88V302M290 88V302M386 88V302M508 91V299"/>
+  </g>
+</svg>
